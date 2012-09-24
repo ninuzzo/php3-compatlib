@@ -103,5 +103,90 @@ foreach ($_FILES as $php3_compatlib['userfile'] => $php3_compatlib['filedata']) 
 
 unset($php3_compatlib);
 
+/* Oracle ORA compatibility functions. Uncomment to port old PHP-Oracle 
+   applications.
+   Please note that cursors are arrays, not resources. This trick has been used 
+   to ease the implementation of the functions. If you app uses is_resourceto 
+   test the result value of some ORA calls, you may have to edit the code and 
+   put an index number (e.g. 1), to make sure the test is correct. */
+/*
+$php3_compatlib_ora_mode = OCI_COMMIT_ON_SUCCESS;
+
+function ora_logon($user, $password) {
+  list($user, $host) = preg_split('/@/', $user);
+  return oci_connect($user,$password,$host);
+}
+
+function ora_commitOn($connection) {
+  global $ora_mode;
+
+  $ora_mode = OCI_COMMIT_ON_SUCCESS;
+  return true;
+}
+
+function ora_commitOff($connection) {
+  global $ora_mode;
+
+  $ora_mode = OCI_NO_AUTO_COMMIT;
+  return true;
+}
+
+function ora_open($connection) {
+  $cursor[0] = $connection;
+  return $cursor;
+}
+
+function ora_parse(& $cursor, $query) {
+  $cursor[1] = oci_parse($cursor[0], $query);
+  return $cursor;
+}
+
+function ora_exec(& $cursor) {
+  global $ora_mode;
+
+  oci_execute($cursor[1], $ora_mode);
+  $cursor[2]=1;
+  return $cursor;
+}
+
+function ora_fetch(& $cursor) {
+  if ($cursor[2] == 1) $cursor[2] = 0;
+  return oci_fetch($cursor[1]);
+}
+
+define("ORA_FETCHINTO_ASSOC", OCI_ASSOC);
+define("ORA_FETCHINTO_NULLS", OCI_RETURN_NULLS);
+
+function ora_fetch_into($cursor, & $result, $flags) {
+  $result = oci_fetch_array($cursor[1], $flags);
+  return oci_num_fields($cursor[1]);
+}
+
+function ora_getColumn(& $cursor, $index) {
+  if ($cursor[2] == 1) {
+    ora_fetch($cursor);
+    $cursor[2] = 0;
+  }
+  $valor = oci_result($cursor[1], $index + 1);
+  return $valor;
+}
+
+function ora_numCols($cursor) {
+  return oci_num_fields($cursor[1]);
+}
+
+function ora_numRows($cursor) {
+  return oci_num_rows($cursor[1]);
+}
+
+function ora_close(& $cursor) {
+  unset($cursor[1]);
+}
+
+function ora_logoff($connection) {
+  oci_close($connection);
+}
+*/
+
 // There should be no last newline.
 ?>
